@@ -1,0 +1,11 @@
+# This is the build file for the magma build system please run this with magma.;
+
+main (`example/specs.cc`);
+out  (`example_specs`);
+bin  (`.`);
+
+exec ();
+clean_main ();
+system (`clear`);
+
+make ();

@@ -1,0 +1,39 @@
+# This is the official First Specifications of the HELL6.99MO Format Defining the version A01F , A Block 01 Finshed
+@import defaults
+
+scope     :
+    scope_element_int     = 0
+    scope_element_string   = "Hello world 2024"
+    scope_element_multilinear_string     = `This
+Is 
+Multi
+Line
+String
+    `
+    inner_scope  :
+        inner_element = UNIDEF
+        inner_element2 = "Hi there"
+      inner_element3   = "Hi there x2!"
+    outer_inner_but_inside_scope = "Yes!!!"
+
+    inner_scope2:
+        this_is_in_inner = UNIDEF
+        this_is_in_inner_too = UNIDEF
+        inner_scope2:
+            this_is_in_inner = UNIDEF
+            this_is_in_inner_too = UNIDEF
+
+    inner_scope3:
+        this_is_in_inner = UNIDEF
+        this_is_in_inner_too = UNIDEF
+
+
+Different_scope:
+    Yes= "This is a different_scope"
+    Comment = "There must be the comment ingnored" # Please ignore the comment yet process the main line
+    another_root:
+        root_data = UNIDEF
+
+    root_id_f = "anything"
+
+Non_Scoped_root = ""

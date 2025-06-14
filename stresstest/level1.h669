@@ -1,0 +1,60 @@
+# Complex HELL6.99MO Spec Test
+root_scope:
+    flag = true
+    count = 9999
+    name = "ROOT_SCOPE"
+    description = `This
+    is a root
+    multi-line
+    description`
+
+    layer1:
+        int1 = 1
+        int2 = 2
+        string1 = "Nested"
+        empty = ""
+
+        layer2:
+            deep_value = "Yes!"
+            list_sim = `val1,
+            val2,
+            val3`
+
+            layer3:
+                insane_scope = "Deep"
+                final_data = `End of scope nesting
+                Now we move back up`
+
+        single_value_layer: value = "inline scope with inline value"
+
+        layer_after_inline:
+            post_inline_test = 42
+            post_inline_str = "All good!"
+
+    weird_indents   :
+       a = "a"
+        b = "b"
+         c = "c"
+          d = "d"
+           e = "e"
+
+# Reopen a root-level sibling
+another_root:
+    id = 0xFAFA
+    multiline_string_test = `Line1
+Line2
+    Line3
+        Line4
+Final`
+
+    nested_array_like_thing:
+        arr_val1 = "Item1"
+        arr_val2 = "Item2"
+        arr_val3 = "Item3"
+
+        deeper:
+            arr_val4 = "Item4"
+            arr_val5 = "Item5"
+
+# Back to root
+terminal_value = "We finish here"

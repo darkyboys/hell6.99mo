@@ -1,0 +1,19 @@
+# Strings
+user:
+    name = "ghgltggamer"
+    status = "active"
+
+# Numbers
+    age = 21
+    score = 9000
+
+# Booleans
+    verified = true
+    admin = false
+
+# Arrays
+    fruits = ["apple", "banana", "cherry"]
+    numbers = ["one", "two", "three"]
+
+# UNIDEF
+token = UNIDEF

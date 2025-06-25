@@ -1,0 +1,19 @@
+user:
+  name = "admin"
+  email = "admin@example.com"
+
+database:host = "localhost"
+database:port = 5432
+
+# This also works (more indented, still inside user)
+     user:role = "owner"
+
+# Now another deep scoped block
+system:
+   logging:
+       enabled = true
+       level = "debug"
+
+def:UNIDEF=UNIDEF
+
+    array = ["Apple", "Mango", "Banana"]

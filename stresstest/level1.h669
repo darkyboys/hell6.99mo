@@ -3,10 +3,10 @@ root_scope:
     flag = true
     count = 9999
     name = "ROOT_SCOPE"
-    description = `This
+    description = "This
     is a root
     multi-line
-    description`
+    description"
 
     layer1:
         int1 = 1
@@ -16,14 +16,14 @@ root_scope:
 
         layer2:
             deep_value = "Yes!"
-            list_sim = `val1,
+            list_sim = "val1,
             val2,
-            val3`
+            val3"
 
             layer3:
                 insane_scope = "Deep"
-                final_data = `End of scope nesting
-                Now we move back up`
+                final_data = "End of scope nesting
+                Now we move back up"
 
         single_value_layer: value = "inline scope with inline value"
 
@@ -41,11 +41,11 @@ root_scope:
 # Reopen a root-level sibling
 another_root:
     id = 0xFAFA
-    multiline_string_test = `Line1
+    multiline_string_test = "Line1
 Line2
     Line3
         Line4
-Final`
+Final"
 
     nested_array_like_thing:
         arr_val1 = "Item1"

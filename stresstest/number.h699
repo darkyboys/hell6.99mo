@@ -1,5 +1,4 @@
 numbers:
-
     a = 1
     b = 2
     c = 3
@@ -37,6 +36,12 @@ string:
         <body href=\"``></body>
     </HTML>
     "
+    say = true
+    say1 = false
+    say2 = true
+    say3 = true
+    say4 = false
+    say5 = UNIDEF
 
 array:
     a = ["ANything

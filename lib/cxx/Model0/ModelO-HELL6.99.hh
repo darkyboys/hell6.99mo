@@ -13,19 +13,30 @@
 #include   <string>
 #include   <vector>
 
+const unsigned long long H699_UNIDEFULL = -1;
+const std::string H699_UNIDEF = "unidefx" + std::to_string(H699_UNIDEFULL);
+
 class HELL6_99MO_TYPE {
     public:
-        HELL6_99MO_TYPE (std::string VALUE, std::string TYPE){
-            if (TYPE == "string" or TYPE == "number" or TYPE == "bool" or TYPE == "array"){
-                type = TYPE;
-            }
-            else {
-                std::cerr << "HELL6.99MO Error -> HELL6_99MO_TYPE was unknown TYPE `"<<TYPE<<"` Can't make a valid type.";
-            }
-        }
+        // HELL6_99MO_TYPE (std::string VALUE, std::string TYPE){
+        //     if (TYPE == "string" or TYPE == "number" or TYPE == "bool" or TYPE == "array"){
+        //         type = TYPE;
+        //     }
+        //     else {
+        //         std::cerr << "HELL6.99MO Error -> HELL6_99MO_TYPE was unknown TYPE `"<<TYPE<<"` Can't make a valid type.";
+        //     }
+        // }
         std::vector <std::string> array_value;
-        std::string value = "";
-        std::string type = "string";
+        std::string string_value = "";
+        std::string string_key = "";
+        std::string unidef_key = "";
+        std::string unidef_value = "";
+        std::string number_key = "";
+        unsigned long long number_value = 0;
+        std::string bool_key = "";
+        bool bool_value;
+        std::string array_key;
+        std::string type = H699_UNIDEF;
 };
 
 class HELL6_99MO{
@@ -282,77 +293,237 @@ class HELL6_99MO{
 
             std::vector <std::vector<std::string>> tokens = Lexer(content);
             for (unsigned long long i = 0;i < tokens.size();i++){
-                // std::cout << tokens [i][0] <<", "; // for debugging
                 // std::cout << tokens [i][1] <<'\n'; // for debugging
-                bool is_line_started = false;
-                for (unsigned long long x = 0;x < tokens[i][1].length();x++){
-                    if (tokens[i][1][x] != ' ' and not is_line_started)
-                        is_line_started = true;
-                    if (tokens[i][1][x] == '[' and is_line_started){
-                        array_keys.push_back({tokens[i][0]});
-                        bool is_array_string_open = false;
-                        std::string array_string_data = "";
-
-                        for (unsigned long long y = x;y < tokens[i][1].length()-x;y++){
-                            if (tokens[i][1][y] == '"'){
-                                if (is_array_string_open and tokens[i][1][y-1] == '\\')
-                                    array_string_data = array_string_data.substr(0, array_string_data.length()-1),
-                                    array_string_data += "\"";
-                                else 
-                                    is_array_string_open = not (is_array_string_open);
-                                continue;
-                            }
-
-                            if (tokens[i][1][y] == ']'){
-                                 array_keys[array_keys.size()-1].push_back(array_string_data);
-                                 x = y;
-                                 break;
-                            }
-
-                            if (tokens[i][1][y] == ','){
-                                 array_keys[array_keys.size()-1].push_back(array_string_data);
-                                 array_string_data.clear();
-                                 continue;
-                            }
-
-                            if (is_array_string_open)
-                                array_string_data += tokens[i][1][y];
-                        }
-
-                        // std::cout << "Key: "<<array_keys[0][0]<<"\n";
-                        // for (unsigned long long z = 1;z < array_keys[0].size();z++){
-                        //     std::cout << "Value: "<<array_keys[0][z]<<"\n";
-                        // } // for debugginh only
+                // std::cout << tokens [i][0] <<", "; // for debugging
+                std::string key = "";
+                for (unsigned long long z = 0;z < tokens[i][0].length();z++){
+                    if (tokens[i][0][z] == '\n' or tokens[i][0][z] == '\0' or tokens[i][0][z] == '\r'){
+                        continue;
                     }
-
-
-                    else if (tokens[i][1][x] == '"' and is_line_started){
-                        string_keys.push_back({tokens[i][0]});
-                        bool is_string_string_open = true;
-                        std::string string_string_data = "";
-                        
-                        for (unsigned long long y = x+1;y < tokens[i][1].length()-x;y++){
-                            if (tokens[i][1][y] == '"'){
-                                if (is_string_string_open and tokens[i][1][y-1] == '\\')
-                                    string_string_data = string_string_data.substr(0, string_string_data.length()-1),
-                                    string_string_data += "\"";
-                                else 
-                                    is_string_string_open = not (is_string_string_open);
+                    else {
+                        key += tokens[i][0][z];
+                    }
+                }
+                if (tokens[i][1] == "UNIDEF"){
+                    unidef_keys.push_back({key, "UNIDEF"});
+                }
+                else if (tokens[i][1] == "true"){
+                    bool_keys.push_back({key, "true"});
+                }
+                else if (tokens[i][1] == "false"){
+                    bool_keys.push_back({key, "false"});
+                }
+                else if (tokens[i][1][0] == '\"'){
+                    std::string content = tokens[i][1].substr(tokens[i][1].find("\"")+1, tokens[i][1].rfind("\"")-1);
+                    std::string content_fixed = "";
+                    for (unsigned long long x = 0;x < content.length();x++){
+                        if (content[x] == '\\' and content[x+1] == '\"'){
+                            content_fixed += "\"";
+                            x+=1;
+                            continue;
+                        }
+                        else{
+                            content_fixed += content[x];
+                        }
+                    }
+                    string_keys.push_back({key, content_fixed});
+                    // std::cout << "Str Content: "<<content_fixed<<"\n\n"; // for debugging
+                }
+                else if (tokens[i][1][0] == '['){
+                    std::vector <std::string> array = {key};
+                    std::string str_current_token = "";
+                    bool str_array_is_string_open = false;
+                    for (unsigned long long x = 1;x < tokens[i][1].length();x++){
+                        if (tokens[i][1][x] == ']' and not str_array_is_string_open){
+                            array.push_back(str_current_token);
+                            array_keys.push_back(array);
+                            // std::cout << "New Array Value: "<<str_current_token<<", Len: "<<array.size()<<"\n\n"; // for debugging
+                            str_current_token.clear();
+                            break;
+                        }
+                        if (tokens[i][1][x] == ',' and not str_array_is_string_open){
+                            array.push_back(str_current_token);
+                            // std::cout << "New Array Value: "<<str_current_token<<"\n\n"; // for debugging
+                            str_current_token.clear();
+                            continue;
+                        }
+                        if (tokens[i][1][x] == '\"'){
+                            if (tokens[i][1][x-1] == '\\' and str_array_is_string_open){
+                                str_current_token = str_current_token.substr(0, str_current_token.length()-1) + "\"";
+                                // str_current_token += "\"";
                                 continue;
                             }
-
-
-                            if (is_string_string_open)
-                                string_string_data += tokens[i][1][y];
+                            else {
+                                str_array_is_string_open = not (str_array_is_string_open);
+                            }
                         }
-                        string_keys[string_keys.size()-1].push_back(string_string_data);
-
-                        // std::cout << "Key: "<<string_keys[0][0]<<"\n";
-                        // for (unsigned long long z = 1;z < string_keys[0].size();z++){
-                        //     std::cout << "Value: "<<string_keys[0][z]<<"\n";
-                        // } // for debugginh only
+                        else {
+                            str_current_token += tokens[i][1][x];
+                        }
+                    }
+                }
+                else {
+                    bool is_num = true;
+                    for (unsigned long long x = 0;x < tokens[i][1].length();x++){
+                        if (tokens[i][1][x] < '0' or tokens[i][1][x] > '9'){
+                            is_num = false;
+                            break;
+                        }
+                    }
+                    if (is_num){
+                        number_keys.push_back({key, tokens[i][1]});
+                        // std::cout << "Current Number: "<<tokens[i][1]<<"\n\n"; // for debugging
+                    }
+                    else {
+                        unsigned long long ascii_number_system = 0;
+                        for (unsigned long long x = 0;x < tokens[i][1].length();x++){
+                            ascii_number_system += int(tokens[i][1][x]);
+                            continue;
+                        }
+                        number_keys.push_back({key, std::to_string(ascii_number_system)});
+                        // std::cout << "Current Ascii Number: "<<ascii_number_system<<"\n\n"; // for debugging
                     }
                 }
             }
         }
+
+
+        HELL6_99MO_TYPE get (std::string key) {
+            HELL6_99MO_TYPE return_value;
+            bool is_assigned = false;
+
+            for (unsigned long long i = 0; i < string_keys.size(); i++) {
+                if (string_keys[i][0] == key) {
+                    return_value.string_value = string_keys[i][1];
+                    return_value.string_key = string_keys[i][0];
+                    return_value.type = "string";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < number_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (number_keys[i][0] == key) {
+                    return_value.number_value = std::stoull(number_keys[i][1]);
+                    return_value.number_key = number_keys[i][0];
+                    return_value.type = "number";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < bool_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (bool_keys[i][0] == key) {
+                    return_value.bool_value = (bool_keys[i][1] == "true");
+                    return_value.bool_key = bool_keys[i][0];
+                    return_value.type = "bool";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < unidef_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (unidef_keys[i][0] == key) {
+                    return_value.unidef_value = "unidef";
+                    return_value.unidef_key = unidef_keys[i][0];
+                    return_value.type = "unidef";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < array_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (array_keys[i][0] == key) {
+                    for (unsigned long long x = 1; x < array_keys[i].size(); x++) {
+                        return_value.array_value.push_back(array_keys[i][x]);
+                    }
+                    return_value.array_key = array_keys[i][0];
+                    return_value.type = "array";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            return return_value;
+        }
+
+
+
+        void set (std::string key, std::string value) {
+            bool is_assigned = false;
+
+            for (unsigned long long i = 0; i < string_keys.size(); i++) {
+                if (string_keys[i][0] == key) {
+                    string_keys[i][1] = value;
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < number_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (number_keys[i][0] == key) {
+                    bool is_num = true;
+                    for (unsigned long long y = 0;y < value.length();y++){
+                        if (value[y] < '0' or value[y] > '9'){
+                            is_num = false;
+                            break;
+                        }
+                    }
+
+                    if (is_num){
+                        number_keys[i][1] = value;
+                    }
+
+                    else {
+                        int ascii_number_system = 0;
+                        for (unsigned long long z = 0;z < value.length();z++){
+                            ascii_number_system += int (value[z]);
+                        }
+                        number_keys[i][1] = std::to_string(ascii_number_system);
+                    }
+                    is_assigned = true;
+                    break;
+                }
+            }
+        
+            for (unsigned long long i = 0; i < bool_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (bool_keys[i][0] == key) {
+                    if (value == "true" or value == "false"){
+                        bool_keys[i][1] = value;
+                        is_assigned = true;
+                        break;
+                    }
+                    else {
+                        std::cerr << "HELL6.99MO Error _> set() can't set a boolean value to anything except for true or false.\n";
+                        std::exit ( 3 );
+                    }
+                }
+            }
+        
+            for (unsigned long long i = 0; i < unidef_keys.size(); i++) {
+                if (is_assigned)
+                    break;
+                if (unidef_keys[i][0] == key) {
+                    unidef_keys[i][1] = "unidef";
+                    is_assigned = true;
+                    break;
+                }
+            }
+        }
+
+
+        // set_array , write and write_back are going to be implemented in future
+
 };

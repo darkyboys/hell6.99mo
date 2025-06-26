@@ -12,6 +12,7 @@ database:port = 5432
 system:
    logging:
        enabled = true
+       level = UNIDEF
        level = "debug"
 
 def:UNIDEF=UNIDEF

@@ -281,7 +281,7 @@ class HELL6_99MO{
             return tokens;
         }
 
-        void Parse (){
+        void Parse (bool tracking = true){
             std::ifstream ifile (file_name);
             if (!ifile.is_open()){
                 std::cerr << "HELL6.99MO Error -> Can't open the given file `" << file_name << "` Please be sure that it can be opened.";
@@ -292,6 +292,7 @@ class HELL6_99MO{
                 content += temp + '\n';
 
             std::vector <std::vector<std::string>> tokens = Lexer(content);
+            std::vector <std::string> keys_tracked = {};
             for (unsigned long long i = 0;i < tokens.size();i++){
                 // std::cout << tokens [i][1] <<'\n'; // for debugging
                 // std::cout << tokens [i][0] <<", "; // for debugging
@@ -304,6 +305,26 @@ class HELL6_99MO{
                         key += tokens[i][0][z];
                     }
                 }
+
+                if (tracking){
+                    bool is_key_already_present = false;
+                    for (unsigned long long trace = 0;trace < keys_tracked.size();trace++){
+                        // std::cout << "Checking keys "<<key<<" with "<<keys_tracked[trace]<<"\n\n"; // for debugging
+                        if (keys_tracked[trace] == key){
+                            // std::cout << "Keys Collided!\n"; // for debugging
+                            is_key_already_present = true;
+                            break;
+                        }
+                    }
+
+                    if (is_key_already_present){
+                        continue;
+                    }
+                    else {
+                        keys_tracked.push_back(key);
+                    }
+                }
+
                 if (tokens[i][1] == "UNIDEF"){
                     unidef_keys.push_back({key, "UNIDEF"});
                 }

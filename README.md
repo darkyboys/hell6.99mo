@@ -214,6 +214,23 @@ int main(){
 
 ---
 
+## Efficient Use Of UNIDEF - Example
+This Example shows one of the most efficient use of `UNIDEF` to tell that these settings in config must exist.
+
+```hell6.99mo
+global_settings:
+    resolution = UNIDEF
+    graphics_preset = UNIDEF
+
+mygame_settings:
+    resolution = 1080
+    graphics_preset = "High"
+```
+
+*mygame_settings is a different scope from the global_settings so values are also different.*
+
+---
+
 ## Contributing ?
 Checkout the [contribution guidelines](CONTRIBUTING.md).
 

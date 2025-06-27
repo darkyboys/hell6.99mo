@@ -11,7 +11,7 @@
 // #include <cstddef>
 
 int main (){
-    HELL6_99MO myfile ("stresstest/level3.h699");
+    HELL6_99MO myfile ("stresstest/attribute-test.h699");
     myfile.Parse();
 
     // for (size_t i = 0;i < myfile.string_keys.size();i++){
@@ -36,5 +36,6 @@ int main (){
     // std::cout << myfile.get("def.UNIDEF").unidef_value<<"\n\n";
     // myfile.set("def.UNIDEF", "Hello world 2024");
     // std::cout << myfile.get("def.UNIDEF").unidef_value<<"\n\n";
-    std::cout <<myfile.get("database.port").type<<"\n";
+    // std::cout <<myfile.get("database.port").type<<"\n";
+    std::cout <<myfile.get("root_scope.flag").type<<"\n";
 } 

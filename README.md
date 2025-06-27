@@ -58,6 +58,14 @@ For example:
 key = "value"
 ```
 
+### Attributes in HELL6.99MO
+`HELL6.99MO` gives you attributes to do some specific programmable task like importing another HELL6.99MO Config file , Etc. Please note that different parsers may provide different attributes. We will be using the official specs of the format by GTG.
+
+**Defining The Attributes**: Anything starts with the `@` symbol is an attribute and the attribute names are seperated by the a ` ` character and right side of the ` ` character is the value of the attribute , (e.g. `@import myfile.h699`)
+
+**Known Attributes**: These attributes are defined in the specification.
+ - - import : Imports another h699 config file and prevent duplications. (File name is given as the attribute value).
+
 *Note you don't need to use ',' like symbols to end the line , HELL6.99MO uses \n for line termination automatically.*
 
 ### Datatypes in HELL6.99MO

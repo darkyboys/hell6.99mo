@@ -63,9 +63,15 @@ class HELL6_99MO{
                  syntax_is_comment_open = false,
                  syntax_is_line_just_started = false;
 
+            bool attribute_is_string_open = false,
+                 attribute_is_value_open = false,
+                 attribute_is_data_writable = true,
+                 attribute_is_attribute_open = false;
+
             std::vector <std::vector<std::string>> elements = {};
             std::vector <unsigned int> scopes_spacings = {};
-            
+            std::vector <std::string> attribute_import_imported_files = {};
+
             std::string uncommented_data;
             std::string opened_scope = "";
             // syntax annalysis
@@ -98,7 +104,7 @@ class HELL6_99MO{
             // Comment remover
             for (unsigned long long i = 0;i < fixed_content.length();i++){
                 // std::cout << file_content[i] << "\n"; // for debugging only 
-                if (fixed_content[i] == '"' or fixed_content[i] == '`'){
+                if (fixed_content[i] == '"'){
                     if (comment_is_string_open and fixed_content[i-1] == '\\'){
                         uncommented_data += "\"";
                         continue;
@@ -114,6 +120,120 @@ class HELL6_99MO{
 
                 if (not comment_is_comment_open)
                     uncommented_data += fixed_content[i];
+            }
+
+
+            // Attribute Manager
+            std::string attributed_data = "";
+            std::string attribute_name = "",
+                        attribute_value = "";
+            for (unsigned long long i = 0;i < uncommented_data.length();i++){
+                if (uncommented_data[i] == '"'){
+                    if (attribute_is_string_open and uncommented_data[i-1] == '\\'){
+                        attributed_data += "\"";
+                        continue;
+                    }
+                    attribute_is_string_open = not (attribute_is_string_open);
+                }
+                if (uncommented_data[i] == '@' and not attribute_is_string_open and not attribute_is_attribute_open){
+                    // std::cout << "Attribute started at : "<<i<<", Character: "<<uncommented_data[i]<<"\n\n"; // for debugging
+                    attribute_is_attribute_open = true;
+                    attribute_is_data_writable = false;
+                    continue;
+                }
+                if (uncommented_data[i] == ' ' and not attribute_is_string_open and attribute_is_attribute_open){
+                    attribute_is_value_open = true;
+                    attribute_is_attribute_open = false;
+                    continue;
+                }
+                if (uncommented_data[i] == '\n' and attribute_is_attribute_open){ // This meeans that attribute wasn't valued so gracefully ignore it and reset everything
+                    attribute_name.clear();
+                    attribute_value.clear();
+                    attribute_is_data_writable = true;
+                    attribute_is_value_open = false;
+                    attribute_is_attribute_open = false;
+                }
+                if (uncommented_data[i] == '\n' and attribute_is_value_open){
+                    // std::cout << "Attribute Name: "<<attribute_name<<"\nAttribute valyue: "<<attribute_value<<"\n\n"; // for debugging
+
+                    // All the attributes defination will go inside this scope / if block
+                    // Import! - For importing files
+                    if (attribute_name == "import"){
+                        // std::cout << "Importing `"<<attribute_value<<"`\n"; // for debugging
+                        bool is_file_already_imported = false;
+                        for (unsigned long long file_index = 0;file_index < attribute_import_imported_files.size();file_index++){
+                            if (attribute_value == attribute_import_imported_files[file_index]){
+                                is_file_already_imported = true;
+                                break;
+                            }
+                        } // done the scanning
+
+                        if (is_file_already_imported){
+                            // Do nothing if file is already imported
+                            continue;
+                        }
+
+                        else {
+                            // Import the file
+                            std::ifstream ifile (attribute_value);
+                            if (!ifile.is_open()){
+                                std::cerr << "HELL6.99MO ERROR _> import attribute needs a valid file path to import a file,\n The file `"<<attribute_value<<"` couldn't be opened, Please make sure that the file is accessible.\n";
+                                std::exit ( 3 );
+                            }
+
+                            // Read the file
+                            std::string temp, content;
+                            while (std::getline(ifile, temp))
+                                content += " " + temp + "\n"; // Please do not break the format by removing the first space.
+
+                            attributed_data += content; // finally write back to the attribute data
+                            attribute_import_imported_files.push_back(attribute_value);
+                        }
+                    }
+                    // Ignore all the unknown attributes gently
+
+                    // Just reset everything
+                    attribute_name.clear();
+                    attribute_value.clear();
+                    attribute_is_data_writable = true;
+                    attribute_is_value_open = false;
+                    attribute_is_attribute_open = false;
+                }
+
+                if (attribute_is_attribute_open)
+                    attribute_name += uncommented_data[i];
+                else if (attribute_is_value_open){
+                    attribute_value += uncommented_data[i];
+                }
+
+                if (attribute_is_data_writable){
+                    attributed_data += uncommented_data[i];
+                }
+            }
+            // std::cout << "After Attribution: \n" << attributed_data << "\n"; // for debugging
+
+
+            // Final Comment Remover
+            // Comment remover
+            uncommented_data.clear();
+            for (unsigned long long i = 0;i < attributed_data.length();i++){
+                // std::cout << file_content[i] << "\n"; // for debugging only 
+                if (attributed_data[i] == '"'){
+                    if (comment_is_string_open and attributed_data[i-1] == '\\'){
+                        uncommented_data += "\"";
+                        continue;
+                    }
+                    comment_is_string_open = not (comment_is_string_open);
+                }
+
+                if (attributed_data[i] == '#' and not comment_is_string_open and not comment_is_comment_open)
+                    comment_is_comment_open = true;
+
+                if (attributed_data[i] == '\n' and not comment_is_string_open)
+                    comment_is_comment_open = false;
+
+                if (not comment_is_comment_open)
+                    uncommented_data += attributed_data[i];
             }
 
             // std::cout << "All the comments has been removed : " << uncommented_data << "\n"; // for debugging only

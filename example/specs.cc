@@ -37,5 +37,17 @@ int main (){
     // myfile.set("def.UNIDEF", "Hello world 2024");
     // std::cout << myfile.get("def.UNIDEF").unidef_value<<"\n\n";
     // std::cout <<myfile.get("database.port").type<<"\n";
-    std::cout <<myfile.get("root_scope.flag").type<<"\n";
+    // std::cout <<myfile.get("root_scope.flag").type<<"\n";
+    // std::cout <<myfile.get("user.fruits").type<<"\n";
+    // std::cout <<myfile.get("user.fruits").array_value[0]<<"\n";
+    // std::cout <<myfile.get("user.fruits").array_value[1]<<"\n";
+    // std::cout <<myfile.get("user.fruits").array_value[2]<<"\n";
+
+    // std::cout <<myfile.get("user.str").type<<"\n";
+    // std::cout <<myfile.get("user.str").array_value[0]<<"\n";
+    // std::cout <<myfile.get("user.str").array_value[1]<<"\n";
+    // std::cout <<myfile.get("user.str").array_value[2]<<"\n";
+
+    std::cout <<myfile.get("system.logging.enabled").bool_value<<"\n";
+
 } 

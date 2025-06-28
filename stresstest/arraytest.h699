@@ -1,3 +1,6 @@
+@import stresstest/level2.h699
+# @import stresstest/level1.h669
+
 # Strings
 user:
     name = "ghgltggamer"
@@ -14,6 +17,11 @@ user:
 # Arrays
     fruits = ["apple", "banana", "cherry"]
     numbers = ["one", "two", "three"]
+    str = [
+        "Str1",
+        "Str2",
+        "Str3"
+    ]
 
 # UNIDEF
 token = UNIDEF

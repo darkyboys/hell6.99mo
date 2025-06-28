@@ -1,3 +1,5 @@
+@import stresstest/arraytest.h699
+
 # Complex HELL6.99MO Spec Test
 root_scope:
     flag = true

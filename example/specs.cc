@@ -11,7 +11,7 @@
 // #include <cstddef>
 
 int main (){
-    HELL6_99MO myfile ("stresstest/attribute-test.h699");
+    HELL6_99MO myfile ("configs/meta.config");
     myfile.Parse();
 
     // for (size_t i = 0;i < myfile.string_keys.size();i++){
@@ -48,6 +48,9 @@ int main (){
     // std::cout <<myfile.get("user.str").array_value[1]<<"\n";
     // std::cout <<myfile.get("user.str").array_value[2]<<"\n";
 
-    std::cout <<myfile.get("system.logging.enabled").bool_value<<"\n";
+    // std::cout <<myfile.get("system.logging.enabled").bool_value<<"\n";
+    std::cout <<myfile.get("config.libinfo.author").type<<"\n";
+    std::cout <<myfile.get("config.append").type<<"\n";
+    // std::cout <<myfile.get("config.UNIDEF").type<<"\n";
 
 } 

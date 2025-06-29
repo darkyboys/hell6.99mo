@@ -251,6 +251,76 @@ class HELL6_99MO{
                 if (uncommented_data[i] == '\n' and not syntax_is_string_open)
                     syntax_is_line_just_started = true;
 
+                if (uncommented_data[i] == '>' and not syntax_is_string_open){
+                    std::string syntax_valued_key = "";
+                    std::string fetched_code = "";
+                    unsigned long long end_line_pos = i;
+                    unsigned long long spaces_count = 0;
+                    for (unsigned long long x = i+1;uncommented_data[x] != '\n';x++){
+                        if (uncommented_data[x] == ' '){
+                            continue;
+                        }
+                        else {
+                            syntax_valued_key += uncommented_data[x];
+                        }
+                        end_line_pos += 1;
+                    }
+                    end_line_pos+=1; // because x will be closed on '\n' so add 1 for '\n'
+
+                    bool is_space_count_started = false;
+                    for (unsigned long long z = i;uncommented_data[z] != '\n';z--){
+                        if (uncommented_data[z] != ' ' and not is_space_count_started){
+                            is_space_count_started = true;
+                        }
+
+                        if (uncommented_data[z] == ' ' and is_space_count_started){
+                            spaces_count += 1;
+                        }
+                    }
+
+                    // for (unsigned long long a = 0;a < elements.size();a++){ // for debugging only
+                    //     std::cout << "Key: "<<elements[a][0]<<"\n\n";
+                    // }
+
+                    std::string spaces = "";
+                    for (unsigned long long spaces_injection = 0;spaces_injection <= spaces_count;spaces_injection++){
+                        spaces += ' ';
+                    }
+                    
+                    for (unsigned long long y = 0;y < elements.size();y++){
+                        std::string syntax_valued_key_substr = elements[y][0].substr(0, syntax_valued_key.length()+1);
+                        // std::cout << "Compairing `"<<syntax_valued_key_substr<<"` with `"<<syntax_valued_key<<"`\n"; // for debugging only
+                        std::string temp = "";
+                        for (char c : syntax_valued_key_substr){ // syntax cleaner
+                            if (c == '\0' or c == '\n' or c == '\r'){
+                                continue;
+                            }
+                            temp += c;
+                        }
+
+                        syntax_valued_key_substr = temp;
+                        if (syntax_valued_key_substr == syntax_valued_key){
+                            // std::cout << "Collided!\n";// for debugging only
+                            fetched_code += spaces;
+                            fetched_code += "    " + elements[y][0] + " = ";
+                            fetched_code += elements[y][1] + "\n";
+                        }
+                        else {
+                            // std::cout << "Not-Collided!\n"<<"Compare length: "<<syntax_valued_key_substr.length() << ", with length : "<<syntax_valued_key.length()<<"\n\n";// for debugging only
+                        }
+                    }
+
+                    if (fetched_code.empty()){ // in case if it's empty
+                        fetched_code = "UNIDEF=UNIDEF";
+                    }
+
+                    uncommented_data[i] = ':'; // convert finally it into a scope
+                    uncommented_data = uncommented_data.substr(0, i+1) + "\n" + fetched_code + uncommented_data.substr(i+end_line_pos-uncommented_data.substr(0, i).length()+1); // inject the fetched code 
+                    i -= 1; // ask the lexer to reparse it again!
+
+                    // std::cout << "New Ucommented Data! > "<<uncommented_data<<"\n\n"; // for debugging only
+                }
+
                 if (uncommented_data[i] == ':' and not syntax_is_string_open){
                     // std::cout << "Collision found at : "<<i<<", character: "<<uncommented_data[i]<<", prev character: "<<uncommented_data[i-1]<<"\n"; // for debugging only
                     std::string current_scope_name = "",

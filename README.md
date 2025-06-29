@@ -86,7 +86,7 @@ These includes :-
  - Strings : These are just characters nothing else , Which are stored inside 2 double-quotes. (e.g. "Hello world 2025")
  - Boolean : These just returns true or false and are written in same way (e.g. true).
  - UNIDEF  : This datatype is often compared to NULL but it is not NULL or undefined , It stands for `Universal Defination` which will work everywhere , With any language and is not null or undefined , But when you have no value to define to a key and you just want the key to be created but later shouldn't be changed then you can assign `UNIDEF` but remember later you can't set it to any other value except for unidef , even if you try your parser will likely turn it into `UNIDEF` automatically as trying to change `UNIDEF` may have fatal consequences. Because `UNIDEF` is meant to tell you that "Hey this is the universal defination with no such datatype and this shouldnot be changed later".
- - Array : Array are just collection of the semi stringular datatypes. Means you can only store strings only , and you can just store strings but very minimal strings not fully loaded string types. Usually array starts with `[` and ends with `]` and after each string a `,` is placed to seperate them , And if your array is multi-linear but have no multi-linear strings then it will be trimed to one line.
+ - Array : Array are just collection of the semi string datatypes. Means you can only store strings only , and you can just store strings but very minimal strings not fully loaded string types. Usually array starts with `[` and ends with `]` and after each string a `,` is placed to seperate them , And if your array is multi-linear but have no multi-linear strings then it will be trimed to one line.
 
  For example :
  ```hell6.99mo
@@ -96,7 +96,7 @@ scope:
     world
     2024", "Hi"] # This is valid
     array3 = ["Hello world 2025",
-              "hi there"] # This is invalid as now you it will trim the array to only one token "Hello world 2025"
+              "hi there"] # This is also valid 
  ```
 
 *Note: Strings with "" can be multiline with a new line but inside the string and \" can be used to inject additional " coat inside a string.*

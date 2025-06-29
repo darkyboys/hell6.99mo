@@ -104,6 +104,39 @@ scope:
 
 ---
 
+### Reflector 
+`HELL6.99MO` provides the reflectors which are used to instantly reflect an element / config scope in another scope for example.
+```hell6.99mo
+scope1:
+    version = 1
+    author = "You"
+
+scope2 > scope1
+scope2:
+    license = "MIT License"
+```
+Here the `scope2` has `scope1` as child scope means `scope2.scope1.version` is completely valid, But in case if you provide wrong scope or it doesn't exist before the reflector then it will add `UNIDEF=UNIDEF` as the children. Also remember for creating the reflector we uses `scope name` and then `>` symbol and then the `existing scope name`. It means you want to point your scope to another scope and make the another scope easily accessible from the another scope.
+
+Also remember! Variation matters, What do i mean from that is:
+```hell6.99mo
+scope1:
+    version = 1
+    author = "You"
+
+scope2 > scope1
+scope2:
+    license = "MIT License" # fine scope 2 will have scope1
+
+scope3 > scope4 # This is not invalid but wrong as scope4 is not processed when scope3 is in the entry , Leaving the lexer to instead return UNIDEF=UNIDEF
+
+scope4:
+    number = 9
+```
+
+*Note: if you @import any config before a reflector , It will process it But if you do it after a reflector , It will throw UNIDEF=UNIDEF instead*
+---
+
+
 ## Implementation of HELL6.99MO
 There is no fixed amount of implementation of the `HELL6.99MO` but the most mature implementation is the official implementation for the `C++` Programming Language , Defining all the format structure and required lexer / parsers. So here we will be learning the `HELL6.99MO` Official C++ Implementation as an Open Source MIT Licensed Library.
 

@@ -747,6 +747,68 @@ class HELL6_99MO{
         }
 
 
-        // set_array , write and write_back are going to be implemented in future
+
+        void write(std::string file_name){
+            std::string file_content = "";
+            for (unsigned long long i = 0;i < string_keys.size();i++){
+                file_content += string_keys[i][0] + " = \"" + string_keys[i][1] + "\"\n";
+            }
+            for (unsigned long long i = 0;i < array_keys.size();i++){
+                file_content += array_keys[i][0] + " = [";
+                for (unsigned long long x = 1; x < array_keys[i].size();x++){
+                    file_content += "\"" + array_keys[i][x] + "\",";
+                }
+
+                file_content = file_content.substr(0, file_content.length()-1) + "]\n";
+            }
+            for (unsigned long long i = 0;i < bool_keys.size();i++){
+                file_content += bool_keys[i][0] + " = " + bool_keys[i][1] + "\n";
+            }
+            for (unsigned long long i = 0;i < unidef_keys.size();i++){
+                file_content += unidef_keys[i][0] + " = " + "UNIDEF" + "\n";
+            }
+            for (unsigned long long i = 0;i < number_keys.size();i++){
+                file_content += number_keys[i][0] + " = " + number_keys[i][1] + "\n";
+            }
+
+
+            // write file
+            std::ofstream ofile (file_name);
+            ofile << file_content;
+        }
+
+
+
+        void new_key(std::string name, std::string type){
+            if (type == "string"){
+                string_keys.push_back({name , ""});
+            }
+            else if (type == "number"){
+                number_keys.push_back({name , "0"});
+            }
+            else if (type == "unidef"){
+                unidef_keys.push_back({name, "UNIDEF"});
+            }
+            else if (type == "array"){
+                array_keys.push_back({name , ""});
+            }
+            else if (type == "bool"){
+                bool_keys.push_back({name, "true"});
+            }
+        }
+
+
+
+        void set_array(std::string key, std::vector <std::string> values){
+            for (unsigned long long i = 0;i < array_keys.size();i++){
+                if (array_keys[i][0] == key){
+                    std::vector <std::string> overwrite = {array_keys[i][0]};
+                    for (unsigned long long x = 0;x < values.size();x++){
+                        overwrite.push_back(values[x]);
+                    }
+                    array_keys[i] = overwrite;
+                }
+            }
+        }
 
 };

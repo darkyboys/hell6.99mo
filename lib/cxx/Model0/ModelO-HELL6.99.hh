@@ -376,7 +376,14 @@ class HELL6_99MO{
                                     continue;
                                 }
                                 if (!is_scope_already_in){
-                                    scopes.push_back(opened_scope);
+                                    std::string correct_scope = "";
+                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
+                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
+                                            continue;
+                                        }
+                                        correct_scope += opened_scope[scope_key_length];
+                                    }
+                                    scopes.push_back(correct_scope);
                                 }
                             }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n";// for debugging
@@ -395,7 +402,14 @@ class HELL6_99MO{
                                     continue;
                                 }
                                 if (!is_scope_already_in){
-                                    scopes.push_back(opened_scope);
+                                    std::string correct_scope = "";
+                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
+                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
+                                            continue;
+                                        }
+                                        correct_scope += opened_scope[scope_key_length];
+                                    }
+                                    scopes.push_back(correct_scope);
                                 }
                             }
                             continue;
@@ -413,7 +427,14 @@ class HELL6_99MO{
                                     continue;
                                 }
                                 if (!is_scope_already_in){
-                                    scopes.push_back(opened_scope);
+                                    std::string correct_scope = "";
+                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
+                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
+                                            continue;
+                                        }
+                                        correct_scope += opened_scope[scope_key_length];
+                                    }
+                                    scopes.push_back(correct_scope);
                                 }
                             }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n"; // for debugging

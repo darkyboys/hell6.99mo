@@ -51,7 +51,9 @@ class HELL6_99MO{
 
         HELL6_99MO (std::string file) : file_name(file) {}
 
-        std::vector <std::vector <std::string>> Lexer (std::string file_content){
+        std::vector <std::string> scopes = {};
+
+        std::vector <std::vector <std::string>> Lexer (std::string file_content, bool track_scopes = true){
             std::vector <std::vector <std::string>> tokens = {};
             // flags
             // Comment
@@ -364,17 +366,56 @@ class HELL6_99MO{
                         if (scopes_spacings.size() == 0){
                             opened_scope = current_scope_name_correctly_formatted;
                             scopes_spacings.push_back(current_scope_spaces_count);
+                            if (track_scopes){
+                                bool is_scope_already_in = false;
+                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
+                                    if (scopes[tracking_index] == opened_scope){
+                                        is_scope_already_in = true;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                                if (!is_scope_already_in){
+                                    scopes.push_back(opened_scope);
+                                }
+                            }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n";// for debugging
                             break;
                         }
                         else if (current_scope_spaces_count <= scopes_spacings.back()){
                             opened_scope = opened_scope.substr(0, opened_scope.rfind("."));
                             scopes_spacings.pop_back();
+                            if (track_scopes){
+                                bool is_scope_already_in = false;
+                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
+                                    if (scopes[tracking_index] == opened_scope){
+                                        is_scope_already_in = true;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                                if (!is_scope_already_in){
+                                    scopes.push_back(opened_scope);
+                                }
+                            }
                             continue;
                         }
                         else if (current_scope_spaces_count > scopes_spacings.back()){
                             opened_scope += "." + current_scope_name_correctly_formatted;
                             scopes_spacings.push_back(current_scope_spaces_count);
+                            if (track_scopes){
+                                bool is_scope_already_in = false;
+                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
+                                    if (scopes[tracking_index] == opened_scope){
+                                        is_scope_already_in = true;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                                if (!is_scope_already_in){
+                                    scopes.push_back(opened_scope);
+                                }
+                            }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n"; // for debugging
                             break;
                         }

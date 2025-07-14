@@ -11,7 +11,7 @@
 // #include <cstddef>
 
 int main (){
-    HELL6_99MO myfile ("configs/meta.config");
+    HELL6_99MO myfile ("configs/strconfig.config");
     myfile.Parse();
 
     // for (size_t i = 0;i < myfile.string_keys.size();i++){
@@ -49,25 +49,30 @@ int main (){
     // std::cout <<myfile.get("user.str").array_value[2]<<"\n";
 
     // std::cout <<myfile.get("system.logging.enabled").bool_value<<"\n";
-    std::cout <<myfile.get("config.libinfo.author").type<<"\n";
-    std::cout <<myfile.get("config.append").type<<"\n";
+    // std::cout <<myfile.get("config.libinfo.author").type<<"\n";
+    // std::cout <<myfile.get("config.append").type<<"\n";
 
-    myfile.write("stdl.jh699");
+    // myfile.write("stdl.jh699");
 
 
-    HELL6_99MO new_config ("NewConfig");
-    new_config.new_key("user.name", "string");
-    new_config.new_key("user.age", "number");
-    new_config.new_key("user.boolean", "bool");
-    new_config.new_key("user.array", "array");
-    new_config.new_key("user.unidef", "unidef");
+    // HELL6_99MO new_config ("NewConfig");
+    // new_config.new_key("user.name", "string");
+    // new_config.new_key("user.age", "number");
+    // new_config.new_key("user.boolean", "bool");
+    // new_config.new_key("user.array", "array");
+    // new_config.new_key("user.unidef", "unidef");
 
-    new_config.set("user.name", "Andrew");
-    new_config.set("user.age", "10");
-    new_config.set("user.boolean", "true");
-    new_config.set_array("user.array", std::vector <std::string> ({"Apple", "Mango", "Banana"}));
+    // new_config.set("user.name", "Andrew");
+    // new_config.set("user.age", "10");
+    // new_config.set("user.boolean", "true");
+    // new_config.set_array("user.array", std::vector <std::string> ({"Apple", "Mango", "Banana"}));
 
-    new_config.write("new_config.cfg");
+    // new_config.write("new_config.cfg");
+
+    for (unsigned long long x = 0;x < myfile.scopes.size();x++){
+        std::cout << myfile.scopes[x]<<" "<<myfile.scopes[x].length()<<"\n";
+    }
+
     // std::cout <<myfile.get("config.UNIDEF").type<<"\n";
 
 } 

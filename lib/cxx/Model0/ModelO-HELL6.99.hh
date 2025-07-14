@@ -366,81 +366,45 @@ class HELL6_99MO{
                         if (scopes_spacings.size() == 0){
                             opened_scope = current_scope_name_correctly_formatted;
                             scopes_spacings.push_back(current_scope_spaces_count);
-                            if (track_scopes){
-                                bool is_scope_already_in = false;
-                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
-                                    if (scopes[tracking_index] == opened_scope){
-                                        is_scope_already_in = true;
-                                        break;
-                                    }
-                                    continue;
-                                }
-                                if (!is_scope_already_in){
-                                    std::string correct_scope = "";
-                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
-                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
-                                            continue;
-                                        }
-                                        correct_scope += opened_scope[scope_key_length];
-                                    }
-                                    scopes.push_back(correct_scope);
-                                }
-                            }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n";// for debugging
                             break;
                         }
                         else if (current_scope_spaces_count <= scopes_spacings.back()){
                             opened_scope = opened_scope.substr(0, opened_scope.rfind("."));
                             scopes_spacings.pop_back();
-                            if (track_scopes){
-                                bool is_scope_already_in = false;
-                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
-                                    if (scopes[tracking_index] == opened_scope){
-                                        is_scope_already_in = true;
-                                        break;
-                                    }
-                                    continue;
-                                }
-                                if (!is_scope_already_in){
-                                    std::string correct_scope = "";
-                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
-                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
-                                            continue;
-                                        }
-                                        correct_scope += opened_scope[scope_key_length];
-                                    }
-                                    scopes.push_back(correct_scope);
-                                }
-                            }
                             continue;
                         }
                         else if (current_scope_spaces_count > scopes_spacings.back()){
                             opened_scope += "." + current_scope_name_correctly_formatted;
                             scopes_spacings.push_back(current_scope_spaces_count);
-                            if (track_scopes){
-                                bool is_scope_already_in = false;
-                                for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
-                                    if (scopes[tracking_index] == opened_scope){
-                                        is_scope_already_in = true;
-                                        break;
-                                    }
-                                    continue;
-                                }
-                                if (!is_scope_already_in){
-                                    std::string correct_scope = "";
-                                    for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
-                                        if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
-                                            continue;
-                                        }
-                                        correct_scope += opened_scope[scope_key_length];
-                                    }
-                                    scopes.push_back(correct_scope);
-                                }
-                            }
                             // std::cout << "Pushed the scope spacing is : " << current_scope_spaces_count <<"\n"; // for debugging
                             break;
                         }
                     }
+
+
+                    if (track_scopes){
+                        // std::cout << "Tracking the scope "<<opened_scope<<"\n"; // for debugging only
+                        bool is_scope_already_in = false;
+                        for (unsigned long long tracking_index = 0;tracking_index < scopes.size();tracking_index++){
+                            if (scopes[tracking_index] == opened_scope){
+                                is_scope_already_in = true;
+                                break;
+                            }
+                            continue;
+                        }
+                        if (!is_scope_already_in){
+                            std::string correct_scope = "";
+                            for (unsigned long long scope_key_length = 0;scope_key_length < opened_scope.length();scope_key_length++){
+                                if (opened_scope[scope_key_length] == '\0' or opened_scope[scope_key_length] == '\r' or opened_scope[scope_key_length] == '\n'){
+                                    continue;
+                                }
+                                correct_scope += opened_scope[scope_key_length];
+                            }
+                            scopes.push_back(correct_scope);
+                        }
+                    }
+
 
                     std::string make_spaces_correctly = "";
                     for (unsigned long long s = 0;s <= current_scope_spaces_count;s++)

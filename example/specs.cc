@@ -73,6 +73,9 @@ int main (){
         std::cout << myfile.scopes[x]<<" "<<myfile.scopes[x].length()<<"\n";
     }
 
+    std::cout << "jconfig , doobra:stdin > "<<myfile.get("jconfig.stdin").string_value<<"\n";
+    std::cout << "bconfig , doobra:stdin > "<<myfile.get("bconfig.stdin").string_value<<"\n";
+
     // std::cout <<myfile.get("config.UNIDEF").type<<"\n";
 
 } 

@@ -134,8 +134,61 @@ scope4:
 ```
 
 *Note: if you @import any config before a reflector , It will process it But if you do it after a reflector , It will throw UNIDEF=UNIDEF instead*
+
 ---
 
+### Reflectors With Depth
+So now we know about reflectors and what they does, Let's talk about reflecting another scope with depth. 
+Reflecting another scope with depth means how deep you want to go to start capturing, For example in this:
+```hell6.99mo
+a:
+    b:
+        c:
+            d:
+                e = "f"
+```
+
+here a is the parent scope of b and b , c , d are childrens of a but when we talk about b so b is the children of a but is parent of c and d and so c is children of both a and b but is the parent of d. And we calls this as nesting or depth, Basically let say you want to reflect the scope a in the scope x so if you use jusr reflectors with `>` then it will also reflect `a` in `x` means for accessing the children of `a` from `x` you must write `x.a.children` where `children` is the `child scope of a`. But let suppose you don't want to reflect `a` but you want to reflect it's children in the scope `x` well here comes the `Depth` because you can decide how deep you want to go to reflect the children scopes with `Depth`. So if the depth is `1` then `a` will not be reflected but it's first child `b` will be reflected so if you want to say `x.b` it's now finally possible, And you can go as deep as you wish. For example you want to get childrens at `depth 2` well you can with `depth 2`.
+
+#### How To Give Depth ?
+Giving depth is very simple just wrtie `-` before `>` in the reflector and how mnay `-` will be there, That much the depth will be given. 
+For example:
+```hell6.99mo
+a:
+    b:
+        c:
+            d:
+                e = "f"
+
+x -> a
+```
+Here the x have depth 1 means it will start refecting `b`.
+
+```hell6.99mo
+a:
+    b:
+        c:
+            d:
+                e = "f"
+
+x > a
+```
+Here the x have depth 0 means it will start reflecting `a`.
+
+```hell6.99mo
+a:
+    b:
+        c:
+            d:
+                e = "f"
+
+x --> a
+```
+Here the x have depth 2 means it will start reflecting `c`.
+
+*Note: You may use depth to make a template and then later overwriting it except for UNIDEFs*
+
+---
 
 ## Implementation of HELL6.99MO
 There is no fixed amount of implementation of the `HELL6.99MO` but the most mature implementation is the official implementation for the `C++` Programming Language , Defining all the format structure and required lexer / parsers. So here we will be learning the `HELL6.99MO` Official C++ Implementation as an Open Source MIT Licensed Library.
@@ -190,6 +243,8 @@ std::vector <std::vector <std::string>> bool_keys = {};
 
 You can access these as `HELL6_99MO::string_keys` etc.
 Now Let suppose you want to check the first token's name and it's value and you know that it's a string you can just say `yourinit.string_keys[0][0]` here the first 0 tells the token number which in our case was `1` for `2` we use `1` because indexing starts from `0` and no matter the type the first index (0) of any token number will be always it's key and rest values , For most type the max size per token number of a Standard vector is 2 where 0 is the key and 1 is the value but for arrays first index (0) is still the key but the size can be anything depending on the array size of the config for example array of 5 tokens in config will result in 6 as the size of token because 0 is reserved for the key and rest are tokens means for accessing arrays we say `array = ["Apple", "Mango", "Banana"]` in the config and in programming we access it with `yourinit.array_value[0][1]` here the output will be `Apple` because `0` is for the key which is `array` and rest is for the indexing means `1` for Apple , `2` for mango and `3` for Banana. Hope that clarifies a lot.
+
+*Note: Parse also have 2 optional arguments while calling it (`bool tracking = true, bool overwrite = true`) they both are true by default, If the tracking is true then the Parser will keep track of the already parsed keys, Preventing duplicates. If overwrite is true then the Parser will not ignore the tracked keys but rewrite them if the config defined them twice in the config and same scope.*
 
 ---
 (Helper Functions)

@@ -258,6 +258,7 @@ class HELL6_99MO{
                     std::string fetched_code = "";
                     unsigned long long end_line_pos = i;
                     unsigned long long spaces_count = 0;
+                    unsigned long long depth_count = 0;
                     for (unsigned long long x = i+1;uncommented_data[x] != '\n';x++){
                         if (uncommented_data[x] == ' '){
                             continue;
@@ -270,13 +271,28 @@ class HELL6_99MO{
                     end_line_pos+=1; // because x will be closed on '\n' so add 1 for '\n'
 
                     bool is_space_count_started = false;
-                    for (unsigned long long z = i;uncommented_data[z] != '\n';z--){
+                    bool is_key_started = false;
+                    for (unsigned long long z = i-1;uncommented_data[z] != '\n';z--){
+                        // std::cout << "Char: "<<uncommented_data[z]<<"\n";
+                        // std::cout <<"is_key_started: " << is_key_started<<"\n";// for debugging only
+                        if (uncommented_data[z] == '-' and not is_key_started){
+                            // std::cout << "Ignoring -\n"; // for debugging only
+                            uncommented_data[z] = ' '; // convert the '-' into a ' ' for ignoring the collision for the ':' annalysis
+                            depth_count += 1;
+                            continue;
+                        }
+
                         if (uncommented_data[z] != ' ' and not is_space_count_started){
                             is_space_count_started = true;
                         }
 
                         if (uncommented_data[z] == ' ' and is_space_count_started){
                             spaces_count += 1;
+                        }
+
+                        if (uncommented_data[z] != '-' and uncommented_data[z] != ' '){
+                            // std::cout << "Index for key start "<<z<<", current char: "<<uncommented_data[z]<<"\n"; // for debugging only
+                            is_key_started = true;
                         }
                     }
 
@@ -304,8 +320,26 @@ class HELL6_99MO{
                         if (syntax_valued_key_substr == syntax_valued_key){
                             // std::cout << "Collided!\n";// for debugging only
                             fetched_code += spaces;
-                            fetched_code += "    " + elements[y][0] + " = ";
+
+                            // depth adder
+                            unsigned long long depth_counter = 0;
+                            // std::cout << "Depth: "<<depth_count << ", Depth Counter: "<<depth_counter<<", Element: "<<elements[y][0]<<"\n"; // for debugging only
+                            std::string deep_element = "";
+                            for (unsigned long long depth = 0;depth < elements[y][0].length();depth++){
+                                // std::cout << "Element Char: "<<elements[y][0][depth]<<"\n"; // for debugging only
+                                if (depth_counter == depth_count){
+                                    deep_element += elements[y][0][depth];
+                                    // std::cout << "Deep Element Selection: "<<deep_element<<"\n"; // for debugging onlu
+                                    continue;
+                                }
+                                if (elements[y][0][depth] == '.'){
+                                    depth_counter += 1;
+                                    // std::cout << "Deep Counter Increment: "<<depth_counter<<"\n"; // for debugging onlu
+                                }
+                            }
+                            fetched_code += "    " + deep_element + " = ";
                             fetched_code += elements[y][1] + "\n";
+                            // std::cout << "Fetched Code: \n"<<fetched_code<<"\n"; // for debugging only
                         }
                         else {
                             // std::cout << "Not-Collided!\n"<<"Compare length: "<<syntax_valued_key_substr.length() << ", with length : "<<syntax_valued_key.length()<<"\n\n";// for debugging only
@@ -319,6 +353,7 @@ class HELL6_99MO{
                     uncommented_data[i] = ':'; // convert finally it into a scope
                     uncommented_data = uncommented_data.substr(0, i+1) + "\n" + fetched_code + uncommented_data.substr(i+end_line_pos-uncommented_data.substr(0, i).length()+1); // inject the fetched code 
                     i -= 1; // ask the lexer to reparse it again!
+                    // std::cout << "File: \n"<<uncommented_data<<"\n"; // for debugging only
 
                     // std::cout << "New Ucommented Data! > "<<uncommented_data<<"\n\n"; // for debugging only
                 }
@@ -509,7 +544,7 @@ class HELL6_99MO{
             return tokens;
         }
 
-        void Parse (bool tracking = true){
+        void Parse (bool tracking = true, bool overwrite = true){
             std::ifstream ifile (file_name);
             if (!ifile.is_open()){
                 std::cerr << "HELL6.99MO Error -> Can't open the given file `" << file_name << "` Please be sure that it can be opened.";
@@ -534,8 +569,8 @@ class HELL6_99MO{
                     }
                 }
 
+                bool is_key_already_present = false;
                 if (tracking){
-                    bool is_key_already_present = false;
                     for (unsigned long long trace = 0;trace < keys_tracked.size();trace++){
                         // std::cout << "Checking keys "<<key<<" with "<<keys_tracked[trace]<<"\n\n"; // for debugging
                         if (keys_tracked[trace] == key){
@@ -546,7 +581,9 @@ class HELL6_99MO{
                     }
 
                     if (is_key_already_present){
-                        continue;
+                        if (not overwrite){
+                            continue;
+                        }
                     }
                     else {
                         keys_tracked.push_back(key);
@@ -554,13 +591,30 @@ class HELL6_99MO{
                 }
 
                 if (tokens[i][1] == "UNIDEF"){
-                    unidef_keys.push_back({key, "UNIDEF"});
+                    if (is_key_already_present){}
+                    else unidef_keys.push_back({key, "UNIDEF"});
                 }
                 else if (tokens[i][1] == "true"){
-                    bool_keys.push_back({key, "true"});
+                    if (is_key_already_present){
+                        for (unsigned long long k = 0;k < bool_keys.size();k++){
+                            if (bool_keys[k][0] == key){
+                                bool_keys[k][1] = "true";
+                                break;
+                            }
+                        }
+                    }
+                    else bool_keys.push_back({key, "true"});
                 }
                 else if (tokens[i][1] == "false"){
-                    bool_keys.push_back({key, "false"});
+                    if (is_key_already_present){
+                        for (unsigned long long k = 0;k < bool_keys.size();k++){
+                            if (bool_keys[k][0] == key){
+                                bool_keys[k][1] = "false";
+                                break;
+                            }
+                        }
+                    }
+                    else bool_keys.push_back({key, "false"});
                 }
                 else if (tokens[i][1][0] == '\"'){
                     std::string content = tokens[i][1].substr(tokens[i][1].find("\"")+1, tokens[i][1].rfind("\"")-1);
@@ -575,7 +629,16 @@ class HELL6_99MO{
                             content_fixed += content[x];
                         }
                     }
-                    string_keys.push_back({key, content_fixed});
+                    // string_keys.push_back({key, content_fixed});
+                    if (is_key_already_present){
+                        for (unsigned long long k = 0;k < string_keys.size();k++){
+                            if (string_keys[k][0] == key){
+                                string_keys[k][1] = content_fixed;
+                                break;
+                            }
+                        }
+                    }
+                    else string_keys.push_back({key, content_fixed});
                     // std::cout << "Str Content: "<<content_fixed<<"\n\n"; // for debugging
                 }
                 else if (tokens[i][1][0] == '['){
@@ -585,7 +648,15 @@ class HELL6_99MO{
                     for (unsigned long long x = 1;x < tokens[i][1].length();x++){
                         if (tokens[i][1][x] == ']' and not str_array_is_string_open){
                             array.push_back(str_current_token);
-                            array_keys.push_back(array);
+                            if (is_key_already_present){
+                                for (unsigned long long k = 0;k < array_keys.size();k++){
+                                    if (array_keys[k][0] == key){
+                                        array_keys[k] = array;
+                                        break;
+                                    }
+                                }
+                            }
+                            else array_keys.push_back(array);
                             // std::cout << "New Array Value: "<<str_current_token<<", Len: "<<array.size()<<"\n\n"; // for debugging
                             str_current_token.clear();
                             break;
@@ -620,7 +691,16 @@ class HELL6_99MO{
                         }
                     }
                     if (is_num){
-                        number_keys.push_back({key, tokens[i][1]});
+                        // number_keys.push_back({key, tokens[i][1]});
+                        if (is_key_already_present){
+                            for (unsigned long long k = 0;k < number_keys.size();k++){
+                                if (number_keys[k][0] == key){
+                                    number_keys[k][1] = tokens[i][1];
+                                    break;
+                                }
+                            }
+                        }
+                        else number_keys.push_back({key, tokens[i][1]});
                         // std::cout << "Current Number: "<<tokens[i][1]<<"\n\n"; // for debugging
                     }
                     else {
@@ -629,7 +709,16 @@ class HELL6_99MO{
                             ascii_number_system += int(tokens[i][1][x]);
                             continue;
                         }
-                        number_keys.push_back({key, std::to_string(ascii_number_system)});
+                        // number_keys.push_back({key, std::to_string(ascii_number_system)});
+                        if (is_key_already_present){
+                            for (unsigned long long k = 0;k < number_keys.size();k++){
+                                if (number_keys[k][0] == key){
+                                    number_keys[k][1] = std::to_string(ascii_number_system);
+                                    break;
+                                }
+                            }
+                        }
+                        else number_keys.push_back({key, std::to_string(ascii_number_system)});
                         // std::cout << "Current Ascii Number: "<<ascii_number_system<<"\n\n"; // for debugging
                     }
                 }
